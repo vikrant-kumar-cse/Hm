@@ -1,0 +1,138 @@
+/* === Timeline Layout === */
+
+.timeline {
+  display: flex;
+  flex-direction: column;
+  
+  padding: 1rem;
+ 
+  max-width: 500px;
+  margin: 0 auto; /* Center the timeline */
+}
+
+
+.timeline-step {
+  display: flex;
+  
+  gap: 20px; /* 20px between label and circle */
+}
+.step-label{
+  margin-left: 30px;
+  
+}
+
+.step-label {
+  flex: 1;
+  text-align: left;
+  font-weight: 500;
+  font-size: 1rem;
+  color: #333;
+  
+}
+
+/* Circle + Line block */
+.step-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0; /* Remove gap between circle and line */
+}
+
+.circle {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  margin: 0; /* Remove margins */
+  background: white;
+}
+
+.line {
+  width: 3px;
+  height: 50px;
+  background-color: #ccc;
+  margin: 0;
+  margin-top: -2px; /* Pull line up to touch bottom of circle */
+}
+
+/* Step gradient backgrounds */
+.step-0 {
+  background: linear-gradient(to bottom, #00c853, #43a047);
+}
+
+.step-1 {
+  background: linear-gradient(to bottom, #43a047, #388e3c);
+}
+
+.step-2 {
+  background: linear-gradient(to bottom, #388e3c, #795548);
+}
+
+.step-3 {
+  background: linear-gradient(to bottom, #795548, #f06292);
+}
+
+.step-4 {
+  background: #e91e63;
+}
+
+
+/* === Card and Container Styling === */
+.tracking-wrapper {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  margin-left: 0px;
+}
+
+.tracking-card {
+  border-radius: 12px;
+  padding: 1rem;
+  background-color:white;
+  width: 100%;
+}
+
+.tracking-title {
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #0d6efd;
+  border-bottom: 2px solid #0d6efd;
+  padding-bottom: 0.5rem;
+}
+
+.tracking-view {
+  background-color:white;
+  
+}
+
+/* === Responsive Adjustments === */
+@media (max-width: 768px) {
+  .timeline-step {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .step-label {
+    font-size: 0.95rem;
+  }
+
+  .tracking-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  /* Styles for screens wider than 768px */
+ 
+  .tracking-card{
+    
+    align-items: center;
+    margin-left: 70px;
+    width: 70%;
+  }
+}
