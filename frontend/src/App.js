@@ -25,6 +25,11 @@ import ResetPasswordRedirect from './pages/ResetPasswordRedirect';
 import { useState } from 'react';
 import RefrshHandler from './RefrshHandler';
 import MessReduction_info from './components/Mess_Red_Info';
+import HostelAllotment_info from './components/HostelAllotment_info';
+import RulesAndRegulations from './components/Rules&Regulation';
+import NoticeBoard from './components/NoticeBoard';
+import MessManagerRequests from './components/Mess_Red_Man';
+import CareTackerMessRed from './components/caretackermess';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -44,6 +49,8 @@ function App() {
   const PrivateRoute04 = ({ element }) => {
     return isAuthenticated ? element : <Navigate to="/mess_manager-login" />;
   };
+
+  const studentId = "6869740aa800d5e0adcba319";
 
   return (
     <div className="App">
@@ -66,10 +73,10 @@ function App() {
           <Route path="Student-profile" element={<StudentProfile />} />
           <Route path="hostel-allotment" element={<AllotmentForm />} />
           <Route path="mess-reduction" element={<MessReduction/>} />
-          <Route path="mess_Red-tracking" element={<MessReductionTracking />} />
+          <Route path="mess_Red-tracking" element={<MessReductionTracking studentId="688a4c5432549aa306e2d1d7" />} />
           <Route path="mess-calendar" element={<StoreManager />} />
           <Route path="grievance" element={<StoreManager />} />
-          <Route path="rules" element={<StoreManager />} />
+          <Route path="rules" element={<RulesAndRegulations />} />
         </Route>
 
         <Route path="/admin-login" element={<AdminLogin />} />
@@ -88,8 +95,9 @@ function App() {
         <Route path="/warden-dashboard/*" element={<PrivateRoute03 element={<WardenDashboard />} />}>
               <Route index element={<h3>📊 Warden Dashboard Overview</h3>} />
               <Route path="user-details" element={<UserTable />} />
-              <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />
               <Route path="Mess_Reduction_Application" element={<MessReduction_info />} />
+              <Route path="view-allotments"  element={<HostelAllotment_info />} />
+              <Route path="Notice"  element={<NoticeBoard />} />
         </Route>
 
 
@@ -101,8 +109,7 @@ function App() {
       {/* Mess_Manager-Dashboard */}
       <Route path="/mess_manager-dashboard/*" element={<PrivateRoute04 element={<MessManagerDashboard />} />}>
                <Route index element={<h3>📊 MessManager Dashboard Overview</h3>} />
-               <Route path="user-details" element={<UserTable />} />
-               
+               <Route path="Mess-Red-Req" element={<MessManagerRequests  />} />
                <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />
         
         </Route>
@@ -115,13 +122,10 @@ function App() {
        <Route path="/caretaker-dashboard/*" element={<PrivateRoute04 element={<CaretakerDashboard />} />}>
                <Route index element={<h3>📊 Caretaker Dashboard Overview</h3>} />
                <Route path="user-details" element={<UserTable />} />
-               
-               <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />
-               
+               <Route path="Mess-Red-Req" element={<CareTackerMessRed />} />
+               <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />          
         </Route>
 
-
-       
       </Routes>
     </div>
   );

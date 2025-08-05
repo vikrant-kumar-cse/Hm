@@ -22,7 +22,7 @@ const CaretakerDashboard = () => {
   const Care_TackerRoute = [
     { label: 'Manage Students', path: '/caretaker-dashboard/manage-students' },
     { label: 'View Allotments', path: '/caretaker-dashboard/view-allotments' },
-    { label: 'Mess Reductions', path: '/caretaker-dashboard/mess-reductions' },
+    { label: 'Mess Reductions', path: '/caretaker-dashboard/Mess-Red-Req' },
     { label: 'Student Grievances', path: '/caretaker-dashboard/grievances' },
     { label: 'Notice Board', path: '/caretaker-dashboard/notice-board' },
   ];

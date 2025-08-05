@@ -20,10 +20,7 @@ const MessManagerDashboard = () => {
   // 🔁 Sidebar links for Mess Man
   const Mess_MangRoutes = [
     { label: 'Manage Students', path: '/mess_manager-dashboard/manage-students' },
-    { label: 'View Allotments', path: '/mess_manager-dashboard/view-allotments' },
-    { label: 'Mess Reductions', path: '/mess_manager-dashboard/mess-reductions' },
-    { label: 'Student Grievances', path: 'mess_manager-dashboard/grievances' },
-    { label: 'Notice Board', path: 'mess_manager-dashboard/notice-board' },
+    { label: 'Mess Reductions', path: '/mess_manager-dashboard/Mess-Red-Req' },
   ];
 
 
