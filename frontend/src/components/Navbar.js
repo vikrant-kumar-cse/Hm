@@ -10,7 +10,7 @@ import {
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
-  DropdownItem
+  DropdownItem,
 } from "reactstrap";
 
 const Navbar = () => {
@@ -23,38 +23,42 @@ const Navbar = () => {
         color="dark"
         dark
         expand="md"
-        className="px-4 py-2 shadow"
+        className="px-4 py-3 shadow-lg"
       >
-        <NavbarBrand href="/" className="fw-bold text-warning fs-4">
-        GECWC
+        <NavbarBrand href="/" className="fw-bold text-warning fs-3">
+          GECWC Hostel
         </NavbarBrand>
-        <NavbarToggler onClick={toggle} />
+        <NavbarToggler onClick={toggle} className="border-0" />
         <Collapse isOpen={isOpen} navbar>
-          <Nav className="ms-auto" navbar>
+          <Nav className="ms-auto align-items-center gap-3" navbar>
             <NavItem>
-              <NavLink href="/components/" className="text-light">
-                Components
+              <NavLink href="/" className="text-light">
+                Home
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink
-                href="https://github.com/reactstrap/reactstrap"
-                className="text-light"
-              >
-                GitHub
+              <NavLink href="/about" className="text-light">
+                About
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink href="/contact" className="text-light">
+                Contact
               </NavLink>
             </NavItem>
 
-            {/* Options Dropdown */}
+            {/* Notices Dropdown */}
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret className="text-light">
-                Options
+                Notices
               </DropdownToggle>
               <DropdownMenu end>
-                <DropdownItem>Option 1</DropdownItem>
-                <DropdownItem>Option 2</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>Reset</DropdownItem>
+                <DropdownItem href="/notices/allotment">
+                  Hostel Allotment
+                </DropdownItem>
+                <DropdownItem href="/notices/mess">
+                  Mess Info
+                </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
 
@@ -67,9 +71,8 @@ const Navbar = () => {
                 <DropdownItem href="/login">User Login</DropdownItem>
                 <DropdownItem href="/admin-login">Admin Login</DropdownItem>
                 <DropdownItem href="/warden-login">Warden Login</DropdownItem>
-                <DropdownItem href="/mess_manager-login">Mess-manager Login</DropdownItem>
-                <DropdownItem href="/hostel-care-tacker-login">Hostel Care Tacker Login</DropdownItem>
-
+                <DropdownItem href="/mess_manager-login">Mess Manager</DropdownItem>
+                <DropdownItem href="/hostel-care-tacker-login">Care Taker</DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem href="/login/more">More...</DropdownItem>
               </DropdownMenu>
@@ -82,5 +85,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
