@@ -13,7 +13,7 @@ import {
   DropdownItem,
 } from "reactstrap";
 
-const Navbar = () => {
+const Navbar = ({ scrollToSection, refs }) => {
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
@@ -23,44 +23,66 @@ const Navbar = () => {
         color="dark"
         dark
         expand="md"
-        className="px-4 py-3 shadow-lg"
+        className="px-4 py-3 shadow-lg sticky-top"
       >
-        <NavbarBrand href="/" className="fw-bold text-warning fs-3">
-          GECWC Hostel
+        <NavbarBrand
+          style={{ cursor: "pointer" }}
+          className="fw-bold text-warning fs-3"
+        >
+          <img src="/Collegelogo.png"  alt="Hostel Logo" style={{
+      maxHeight: "50px",     // Bigger size, adjust this as needed
+      marginRight: 10,
+      borderRadius: 10
+
+    }}
+  />
         </NavbarBrand>
+
         <NavbarToggler onClick={toggle} className="border-0" />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="ms-auto align-items-center gap-3" navbar>
+
             <NavItem>
-              <NavLink href="/" className="text-light">
-                Home
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink href="/about" className="text-light">
+              <NavLink
+                onClick={() => scrollToSection(refs.aboutRef)}
+                style={{ cursor: "pointer" }}
+                className="text-light"
+              >
                 About
               </NavLink>
             </NavItem>
+
             <NavItem>
-              <NavLink href="/contact" className="text-light">
+              <NavLink
+                onClick={() => scrollToSection(refs.contactRef)}
+                style={{ cursor: "pointer" }}
+                className="text-light"
+              >
                 Contact
               </NavLink>
             </NavItem>
 
-            {/* Notices Dropdown */}
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret className="text-light">
-                Notices
-              </DropdownToggle>
-              <DropdownMenu end>
-                <DropdownItem href="/notices/allotment">
-                  Hostel Allotment
-                </DropdownItem>
-                <DropdownItem href="/notices/mess">
-                  Mess Info
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
+            {/* Notices */}
+            <NavItem>
+              <NavLink
+                onClick={() => scrollToSection(refs.noticeRef)}
+                style={{ cursor: "pointer" }}
+                className="text-light"
+              >
+                Notice
+              </NavLink>
+            </NavItem>
+
+            {/* Faclities */}
+            <NavItem>
+              <NavLink
+                onClick={() => scrollToSection(refs.facilitiesRef)}
+                style={{ cursor: "pointer" }}
+                className="text-light"
+              >
+                Facilities
+              </NavLink>
+            </NavItem>
 
             {/* Login Dropdown */}
             <UncontrolledDropdown nav inNavbar>
@@ -77,6 +99,7 @@ const Navbar = () => {
                 <DropdownItem href="/login/more">More...</DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+
           </Nav>
         </Collapse>
       </ReactstrapNavbar>

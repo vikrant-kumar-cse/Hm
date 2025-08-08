@@ -15,9 +15,9 @@ const Footer = () => {
         <div style={styles.column}>
           <h4>Quick Links</h4>
           <ul style={styles.linkList}>
-            <li><a href="/">Home</a></li>
-            <li><a href="/notice">Notices</a></li>
-            <li><a href="/about">About</a></li>
+            <li><a href="/linkedin">Linkedin</a></li>
+            <li><a href="/insta">Instagram</a></li>
+            <li><a href="/facebook">Facebook</a></li>
             <li><a href="/contact">Contact</a></li>
           </ul>
         </div>

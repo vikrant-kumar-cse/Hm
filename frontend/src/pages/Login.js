@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import { handleError, handleSuccess } from '../utils';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 function Login() {
 
     const [loginInfo, setLoginInfo] = useState({
@@ -99,6 +100,7 @@ function Login() {
             </div>
             </div>
             <ToastContainer />
+            <Footer />
         </div>
     )
 }
