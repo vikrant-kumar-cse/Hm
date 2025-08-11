@@ -1,0 +1,62 @@
+.tracking-wrapper {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.timeline {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.timeline-step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+  padding: 0 5px;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.circle {
+  width: 26px;
+  height: 26px;
+  background: #dee2e6;
+  border-radius: 50%;
+  z-index: 1;
+  transition: all 0.3s ease;
+  border: 2px solid #adb5bd;
+}
+
+.circle.active {
+  background: #198754;
+  border-color: #198754;
+}
+
+.line {
+  height: 4px;
+  flex: 1;
+  background: #dee2e6;
+  margin: 0 4px;
+  transition: all 0.3s ease;
+}
+
+.timeline-step:last-child .line {
+  display: none;
+}
+
+.step-label {
+  font-size: 13px;
+  margin-top: 10px;
+  min-height: 40px;
+  padding: 0 5px;
+  color: #6c757d;
+}

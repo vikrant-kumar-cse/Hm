@@ -1,0 +1,35 @@
+/* All notices subtle fade animation */
+.notice-item {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    animation: fadeInMove 1s ease forwards; /* runs once */
+  }
+  
+  /* Hover effect */
+  .notice-item:hover {
+    background-color: #f9fafb;
+    transform: translateX(4px);
+  }
+  
+  /* Latest notice highlight (continuous animation) */
+  .latest-notice {
+    background: linear-gradient(90deg, #fff8e1, #fff3cd);
+    border-left: 4px solid #fbbf24;
+    animation: softPulse 4s ease-in-out infinite;
+    border-radius: 4px;
+  }
+  
+  /* Gentle glow for latest notice */
+  @keyframes softPulse {
+    0% { box-shadow: 0 0 0px rgba(251, 191, 36, 0.2); }
+    50% { box-shadow: 0 0 8px rgba(251, 191, 36, 0.4); }
+    100% { box-shadow: 0 0 0px rgba(251, 191, 36, 0.2); }
+  }
+  
+  /* Fade-in + slight up motion for all notices */
+  @keyframes fadeInMove {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
