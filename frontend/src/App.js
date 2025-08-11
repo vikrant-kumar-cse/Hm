@@ -34,7 +34,8 @@ import MessManagerRequests from './components/Mess_Red_Man';
 import CareTackerMessRed from './components/caretackermess';
 import CareTackerApproval from './components/AttotmentCaretacker';
 import NoticesSection from './components/NoticesSection';
-
+import SearchHistory from './components/SearchHistory';
+import TodayDeductions from './components/TodayDeductions';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -106,6 +107,7 @@ function App() {
               <Route path="Mess_Reduction_Application" element={<MessReduction_info />} />
               <Route path="view-allotments"  element={<HostelAllotment_info />} />
               <Route path="Notice"  element={<NoticeBoard />} />
+              <Route path="History"  element={<SearchHistory />} />
         </Route>
 
 
@@ -119,6 +121,7 @@ function App() {
                <Route index element={<h3>📊 MessManager Dashboard Overview</h3>} />
                <Route path="Mess-Red-Req" element={<MessManagerRequests  />} />
                <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />
+               <Route path="Mess-ded-today" element={<TodayDeductions />} />
         
         </Route>
         

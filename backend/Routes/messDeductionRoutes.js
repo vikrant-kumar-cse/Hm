@@ -405,5 +405,27 @@ router.get('/caretaker/pending', async (req, res) => {
   }
 });
 
+// GET /messdeduction/caretaker/today — Approved by caretaker & in today's range
+router.get('/caretaker/today', async (req, res) => {
+  try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
+
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1); // Start of next day
+
+    const approvedToday = await MessDeductionRequest.find({
+      caretackerApproval: true,
+      fromDate: { $lte: today },   // From date is today or earlier
+      toDate: { $gte: today }      // To date is today or later
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json(approvedToday);
+  } catch (error) {
+    console.error('Error fetching today caretaker approved requests:', error);
+    res.status(500).json({ message: 'Server error while fetching today caretaker approved requests' });
+  }
+});
+
 
 module.exports = router;
