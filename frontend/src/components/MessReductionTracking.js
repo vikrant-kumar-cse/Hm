@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const BASE_URL = 'http://localhost:8080/messdeduction';
+const BASE_URL = 'http://localhost:8080/messdeduction/status';
 
 const StatusTracker = () => {
   const [rollNumber, setRollNumber] = useState('');
@@ -19,7 +19,7 @@ const StatusTracker = () => {
     setRequest(null);
 
     try {
-      const res = await fetch(`${BASE_URL}/${rollNumber.trim()}`);
+      const res = await fetch(`${BASE_URL}/${rollNumber.trim()}`); // matches backend /status/:rollNumber
       if (!res.ok) {
         if (res.status === 404) {
           throw new Error('No request found for this roll number');
@@ -28,11 +28,7 @@ const StatusTracker = () => {
         }
       }
       const data = await res.json();
-      if (data.length > 0) {
-        setRequest(data[0]);
-      } else {
-        setError('No request found for this roll number');
-      }
+      setRequest(data); // backend returns a single object now
     } catch (err) {
       setError(err.message || 'Error fetching request data');
     } finally {
@@ -49,7 +45,7 @@ const StatusTracker = () => {
 
   const isStageApproved = (key) => {
     if (key === 'finalApproval') {
-      return request?.caretackerApproval === true;
+      return request?.finalApproval === true;
     }
     return request ? request[key] === true : false;
   };
@@ -115,7 +111,9 @@ const StatusTracker = () => {
       {loading && <p style={{ textAlign: 'center' }}>Loading status...</p>}
 
       {error && (
-        <p style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>{error}</p>
+        <p style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>
+          {error}
+        </p>
       )}
 
       {request && (
@@ -140,13 +138,13 @@ const StatusTracker = () => {
             </span>
           </div>
 
-          {/* Vertical Tracker Container */}
+          {/* Vertical Tracker */}
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
-              alignItems: 'center', // center horizontally
-              gap: 30, // space between stages
+              alignItems: 'center',
+              gap: 30,
               marginTop: 30,
               marginBottom: 30,
               paddingLeft: 0,
@@ -166,7 +164,6 @@ const StatusTracker = () => {
                     userSelect: 'none',
                   }}
                 >
-                  {/* Circle */}
                   <div
                     style={{
                       width: 50,
@@ -186,10 +183,12 @@ const StatusTracker = () => {
                         : 'none',
                     }}
                   >
-                    {approved ? '✓' : index === lastApprovedIndex + 1 ? '⏳' : ''}
+                    {approved
+                      ? '✓'
+                      : index === lastApprovedIndex + 1
+                      ? '⏳'
+                      : ''}
                   </div>
-
-                  {/* Label */}
                   <div
                     style={{
                       fontSize: 16,

@@ -36,6 +36,7 @@ import CareTackerApproval from './components/AttotmentCaretacker';
 import NoticesSection from './components/NoticesSection';
 import SearchHistory from './components/SearchHistory';
 import TodayDeductions from './components/TodayDeductions';
+import MessTrendsChart from './components/Analytics';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -93,9 +94,9 @@ function App() {
         {/* ✅ ADMIN DASHBOARD */}
         <Route path="/admin-dashboard/*" element={<PrivateRoute02 element={<AdminDashboard />} />}>
           <Route index element={<h3>📊 Admin Dashboard Overview</h3>} />
-          <Route path="user-details" element={<UserTable />} />
-          <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />
-          <Route path="store-manager" element={<StoreManager />} />
+          <Route path="manage-students" element={<UserTable />} />
+          <Route path="reduction-trainds" element={< MessTrendsChart />} />
+          <Route path="mess-records" element={<SearchHistory />} />
         </Route>
 
 

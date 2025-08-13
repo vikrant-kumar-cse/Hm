@@ -1,5 +1,8 @@
 const { login, sendEmailVerification, verifyAndSignup,forgotpassword,resetPassword } = require('../Controllers/AuthController');
 const { emailValidationforSignup,signupValidation, loginValidation } = require('../Middlewares/AuthValidation');
+const { Parser } = require("json2csv");
+const ExcelJS = require("exceljs");
+//const User = require("./Models/User");
 
 
 //ye change hua hai 2 line
@@ -90,6 +93,94 @@ router.put('/users/:userId',auth, role('admin'), async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+router.get("/export/csv", async (req, res) => {
+  try {
+    const users = await User.find().lean(); // lean() for plain JS objects
+
+    // Fields according to your schema
+    const fields = [
+      "_id",
+      "name",
+      "email",
+      "mobile",
+      "isEmailVerified",
+      "role",
+      "createdAt"
+    ];
+
+    const parser = new Parser({ fields });
+    const csv = parser.parse(users);
+
+    res.header("Content-Type", "text/csv");
+    res.attachment("users.csv");
+    res.send(csv);
+  } catch (err) {
+    res.status(500).json({ message: "Error exporting CSV", error: err.message });
+  }
+});
+
+/**
+ * Export as Excel
+ */
+router.get("/export/excel", async (req, res) => {
+  try {
+    const users = await User.find().lean();
+
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Users");
+
+    // Columns based on your schema
+    worksheet.columns = [
+      { header: "ID", key: "_id", width: 30 },
+      { header: "Name", key: "name", width: 20 },
+      { header: "Email", key: "email", width: 30 },
+      { header: "Mobile", key: "mobile", width: 15 },
+      { header: "Email Verified", key: "isEmailVerified", width: 15 },
+      { header: "Role", key: "role", width: 15 },
+      { header: "Created At", key: "createdAt", width: 20 }
+    ];
+
+    // Add Rows
+    users.forEach((user) => {
+      worksheet.addRow(user);
+    });
+
+    // Download settings
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader("Content-Disposition", "attachment; filename=users.xlsx");
+
+    await workbook.xlsx.write(res);
+    res.end();
+  } catch (err) {
+    res.status(500).json({ message: "Error exporting Excel", error: err.message });
+  }
+});
+
+
 
 
 module.exports = router;

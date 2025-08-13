@@ -428,4 +428,24 @@ router.get('/caretaker/today', async (req, res) => {
 });
 
 
+router.get('/status/:rollNumber', async (req, res) => {
+  const rollNumber = req.params.rollNumber; 
+  try {
+    const status = await MessDeductionRequest
+      .findOne({ rollNumber: rollNumber.trim() })
+      .sort({ createdAt: -1 });
+
+    if (!status) {
+      return res.status(404).json({ message: 'Please Give Correct Roll Number' });
+    }
+
+    res.status(200).json(status);
+  } catch (err) {
+    console.log(err.message);
+    res.status(500).json({ message: 'Server Error' });
+  }
+});
+
+
+
 module.exports = router;

@@ -23,7 +23,7 @@ const AdminDashboard = () => {
     { label: 'Hostel Allotments', path: '/admin-dashboard/allotments' },
     { label: 'Mess Reduction Records', path: '/admin-dashboard/mess-records' },
     { label: 'Send Notice', path: '/admin-dashboard/send-notice' },
-    { label: 'Rules Management', path: '/admin-dashboard/manage-rules' },
+    { label: 'Mess Reduction Trends', path: '/admin-dashboard/reduction-trainds' },
   ];
 
   const handleLogout = () => {
