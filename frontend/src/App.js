@@ -15,7 +15,7 @@ import MessManagerDashboard from './pages/MessManagerDashboard';
 import CaretakerDashboard from './pages/CaretakerDashboard';
 import Navigation from './components/HomeCarousel'
 import MessReductionForm from './components/AdminSettings';
-import StoreManager from './components/StoreManager';
+import Grievance from './components/GrievanceForm';
 import StudentProfile from './components/Studentprofile';
 import AllotmentForm from './components/AllotmentForm';
 import MessReduction from './components/MessReduction';
@@ -37,6 +37,7 @@ import NoticesSection from './components/NoticesSection';
 import SearchHistory from './components/SearchHistory';
 import TodayDeductions from './components/TodayDeductions';
 import MessTrendsChart from './components/Analytics';
+import StudentGrievance from './components/StudentGrievance';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -84,8 +85,8 @@ function App() {
           <Route path="hostel-allotment" element={<AllotmentForm />} />
           <Route path="mess-reduction" element={<MessReduction/>} />
           <Route path="mess_Red-tracking" element={<MessReductionTracking studentId="688a4c5432549aa306e2d1d7" />} />
-          <Route path="mess-calendar" element={<StoreManager />} />
-          <Route path="grievance" element={<StoreManager />} />
+          <Route path="mess-calendar" element={<Grievance/>} />
+          <Route path="grievance" element={<Grievance/>} />
           <Route path="rules" element={<RulesAndRegulations />} />
         </Route>
 
@@ -109,6 +110,7 @@ function App() {
               <Route path="view-allotments"  element={<HostelAllotment_info />} />
               <Route path="Notice"  element={<NoticeBoard />} />
               <Route path="History"  element={<SearchHistory />} />
+              <Route path="grievances" element={ <StudentGrievance /> } />
         </Route>
 
 

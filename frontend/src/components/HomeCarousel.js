@@ -28,17 +28,18 @@ const HomeCarousel = () => {
   }, []);
 
   const hostelImages = [
-    {
-      title: '✨ Beautiful Girls Hostel',
-      imgUrl: './girlhostel.jpg',
-    },
+   
     {
       title: '🛏 Boys Hostel',
-      imgUrl: './bridge.jpg',
+      imgUrl: './hostel boys.jpg',
     },
     {
       title: '🎮 Common Area for Students',
-      imgUrl: './acadminc.jpg',
+      imgUrl: './acadmic.jpg',
+    },
+     {
+      title: '✨ Beautiful Girls Hostel',
+      imgUrl: './girlhostel.jpg',
     },
   ];
 
