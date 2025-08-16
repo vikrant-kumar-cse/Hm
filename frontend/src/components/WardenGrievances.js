@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Container, Row, Col, Spinner } from "reactstrap";
 
-const GrievanceList = () => {
+const WardenGrievances = () => {
   const [grievances, setGrievances] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -31,9 +31,8 @@ const GrievanceList = () => {
       });
 
       if (res.ok) {
-        setGrievances((prev) =>
-          prev.map((g) => (g._id === id ? { ...g, status: "Solved" } : g))
-        );
+        // Remove solved grievance from the page
+        setGrievances((prev) => prev.filter((g) => g._id !== id));
         alert("✅ Grievance marked as solved.");
       } else {
         alert("❌ Failed to update grievance.");
@@ -59,42 +58,14 @@ const GrievanceList = () => {
       });
 
       if (res.ok) {
-        setGrievances((prev) =>
-          prev.map((g) =>
-            g._id === id
-              ? { ...g, status: "Rejected", rejectionReason: reason }
-              : g
-          )
-        );
+        // Remove rejected grievance from the page
+        setGrievances((prev) => prev.filter((g) => g._id !== id));
         alert("❌ Grievance rejected.");
       } else {
         alert("❌ Failed to reject grievance.");
       }
     } catch (err) {
       console.error("Error rejecting grievance:", err);
-    }
-  };
-
-  // Handle Forward to Warden
-  const handleForward = async (id) => {
-    try {
-      const res = await fetch(`http://localhost:8080/grievance/${id}/forward`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (res.ok) {
-        setGrievances((prev) =>
-          prev.map((g) =>
-            g._id === id ? { ...g, forwardedToWarden: true } : g
-          )
-        );
-        alert("➡️ Grievance forwarded to Warden.");
-      } else {
-        alert("❌ Failed to forward grievance.");
-      }
-    } catch (err) {
-      console.error("Error forwarding grievance:", err);
     }
   };
 
@@ -106,18 +77,18 @@ const GrievanceList = () => {
       </Container>
     );
 
-  // Filter only pending and not forwarded grievances
-  const pendingGrievances = grievances.filter(
-    (g) => g.status === "Pending" && !g.forwardedToWarden
+  // Filter only grievances forwarded to Warden and still pending
+  const wardenGrievances = grievances.filter(
+    (g) => g.forwardedToWarden && g.status === "Pending"
   );
 
   return (
     <Container style={{ marginTop: "50px" }}>
       <Row>
         <Col>
-          <h2 className="text-center mb-4">📋 Pending Grievances</h2>
-          {pendingGrievances.length === 0 ? (
-            <p className="text-center">No pending grievances 🎉</p>
+          <h2 className="text-center mb-4">🏫 Grievances for Warden</h2>
+          {wardenGrievances.length === 0 ? (
+            <p className="text-center">No grievances forwarded to Warden 🎉</p>
           ) : (
             <Table striped bordered hover responsive>
               <thead className="table-dark">
@@ -134,7 +105,7 @@ const GrievanceList = () => {
                 </tr>
               </thead>
               <tbody>
-                {pendingGrievances.map((g) => (
+                {wardenGrievances.map((g) => (
                   <tr key={g._id}>
                     <td>{g.name}</td>
                     <td>{g.branch}</td>
@@ -171,13 +142,6 @@ const GrievanceList = () => {
                       >
                         ❌ Reject
                       </Button>
-                      <Button
-                        color="warning"
-                        size="sm"
-                        onClick={() => handleForward(g._id)}
-                      >
-                        ➡️ Forward
-                      </Button>
                     </td>
                   </tr>
                 ))}
@@ -190,4 +154,4 @@ const GrievanceList = () => {
   );
 };
 
-export default GrievanceList;
+export default WardenGrievances;

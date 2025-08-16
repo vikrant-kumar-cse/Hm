@@ -12,12 +12,15 @@ import {
 
 const GrievanceForm = () => {
   const [name, setName] = useState('');
+  const [email, setEmail] = useState(''); // New email state
   const [branch, setBranch] = useState('');
   const [rollNumber, setRollNumber] = useState('');
+  const [hostel, setHostel] = useState('');
+  const [floor, setFloor] = useState('');
+  const [grievanceType, setGrievanceType] = useState('');
   const [problem, setProblem] = useState('');
   const [documentFile, setDocumentFile] = useState(null);
 
-  // Ref for file input
   const fileInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
@@ -25,8 +28,12 @@ const GrievanceForm = () => {
 
     const data = new FormData();
     data.append('name', name);
+    data.append('email', email); // Append email to form data
     data.append('branch', branch);
     data.append('rollNumber', rollNumber);
+    data.append('hostel', hostel);
+    data.append('floor', floor);
+    data.append('grievanceType', grievanceType);
     data.append('problem', problem);
     if (documentFile) data.append('document', documentFile);
 
@@ -44,12 +51,15 @@ const GrievanceForm = () => {
 
       // Reset form fields
       setName('');
+      setEmail('');
       setBranch('');
       setRollNumber('');
+      setHostel('');
+      setFloor('');
+      setGrievanceType('');
       setProblem('');
       setDocumentFile(null);
 
-      // Reset file input
       if (fileInputRef.current) {
         fileInputRef.current.value = null;
       }
@@ -75,6 +85,17 @@ const GrievanceForm = () => {
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="email">Email</Label>
+              <Input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
             </FormGroup>
@@ -111,6 +132,54 @@ const GrievanceForm = () => {
             </FormGroup>
 
             <FormGroup>
+              <Label for="hostel">Hostel</Label>
+              <Input
+                type="select"
+                id="hostel"
+                value={hostel}
+                onChange={(e) => setHostel(e.target.value)}
+                required
+              >
+                <option value="">-- Select Hostel --</option>
+                <option value="Girls">Girls Hostel</option>
+                <option value="Boys">Boys Hostel</option>
+              </Input>
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="floor">Floor</Label>
+              <Input
+                type="select"
+                id="floor"
+                value={floor}
+                onChange={(e) => setFloor(e.target.value)}
+                required
+              >
+                <option value="">-- Select Floor --</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </Input>
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="grievanceType">Grievance Type</Label>
+              <Input
+                type="select"
+                id="grievanceType"
+                value={grievanceType}
+                onChange={(e) => setGrievanceType(e.target.value)}
+                required
+              >
+                <option value="">-- Select Grievance Type --</option>
+                <option value="Mess">Mess</option>
+                <option value="Hostel">Hostel</option>
+              </Input>
+            </FormGroup>
+
+            <FormGroup>
               <Label for="problem">Problem</Label>
               <Input
                 type="textarea"
@@ -126,7 +195,7 @@ const GrievanceForm = () => {
               <Input
                 type="file"
                 id="document"
-                ref={fileInputRef} // ref to reset input
+                ref={fileInputRef}
                 onChange={(e) => setDocumentFile(e.target.files[0])}
               />
             </FormGroup>

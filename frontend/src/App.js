@@ -38,6 +38,7 @@ import SearchHistory from './components/SearchHistory';
 import TodayDeductions from './components/TodayDeductions';
 import MessTrendsChart from './components/Analytics';
 import StudentGrievance from './components/StudentGrievance';
+import WardenGrievances from './components/WardenGrievances';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -110,7 +111,8 @@ function App() {
               <Route path="view-allotments"  element={<HostelAllotment_info />} />
               <Route path="Notice"  element={<NoticeBoard />} />
               <Route path="History"  element={<SearchHistory />} />
-              <Route path="grievances" element={ <StudentGrievance /> } />
+              <Route path="warden_grievances" element={<WardenGrievances />} />
+             
         </Route>
 
 
@@ -139,7 +141,8 @@ function App() {
                <Route path="Mess-Red-Req" element={<CareTackerMessRed />} />
                <Route path="view-allotments"  element={<CareTackerApproval />} />
                <Route path="notice-board"  element={<NoticeBoard />} />
-               <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />          
+               <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />
+                <Route path="grievances" element={ <StudentGrievance /> } />          
         </Route>
 
       </Routes>

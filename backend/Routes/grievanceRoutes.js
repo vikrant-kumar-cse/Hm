@@ -3,35 +3,51 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const Grievance = require('../Models/Grievance');
+const nodemailer = require('nodemailer');
+
+// =======================
+// Nodemailer setup
+// =======================
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,      // .env me aapka email
+    pass: process.env.EMAIL_PASS, // .env me aapka email password
+  },
+});
 
 // =======================
 // Multer setup for file upload
 // =======================
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/'); // Save files in uploads folder
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
+  destination: (req, file, cb) => cb(null, 'uploads/'),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
 });
 const upload = multer({ storage });
 
 // =======================
 // Submit Grievance
-// @route   POST /grievance
 // =======================
 router.post('/', upload.single('document'), async (req, res) => {
   try {
-    const { name, branch, rollNumber, problem } = req.body;
+    const { name, email, branch, rollNumber, hostel, floor, grievanceType, problem } = req.body;
+
+    if (!name || !email || !branch || !rollNumber || !hostel || !floor || !grievanceType || !problem) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
     const newGrievance = new Grievance({
       name,
+      email,
       branch,
       rollNumber,
+      hostel,
+      floor,
+      grievanceType,
       problem,
-      documentPath: req.file ? req.file.path : null,
-      status: "Pending"   // default status
+      document: req.file ? req.file.path : null,
+      status: "Pending",
+      forwardedToWarden: false
     });
 
     const saved = await newGrievance.save();
@@ -44,7 +60,6 @@ router.post('/', upload.single('document'), async (req, res) => {
 
 // =======================
 // Get all Grievances
-// @route   GET /grievance
 // =======================
 router.get('/', async (req, res) => {
   try {
@@ -57,7 +72,6 @@ router.get('/', async (req, res) => {
 
 // =======================
 // Mark Grievance as Solved
-// @route   PUT /grievance/:id/solve
 // =======================
 router.put('/:id/solve', async (req, res) => {
   try {
@@ -68,6 +82,18 @@ router.put('/:id/solve', async (req, res) => {
     );
     if (!grievance) return res.status(404).json({ error: "Grievance not found" });
 
+    // Send email to student
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: grievance.email,
+      subject: 'Grievance Solved ✅',
+      text: `Hello ${grievance.name},\n\nYour grievance has been solved.\n\nRegards,\nHostel Team`
+    };
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) console.error('❌ Email sending error:', err);
+      else console.log('📧 Email sent:', info.response);
+    });
+
     res.json({ message: "✅ Grievance marked as solved", data: grievance });
   } catch (err) {
     console.error("❌ Error solving grievance:", err);
@@ -77,14 +103,11 @@ router.put('/:id/solve', async (req, res) => {
 
 // =======================
 // Reject Grievance
-// @route   PUT /grievance/:id/reject
 // =======================
 router.put('/:id/reject', async (req, res) => {
   try {
     const { reason } = req.body;
-    if (!reason || reason.trim() === "") {
-      return res.status(400).json({ error: "Rejection reason is required" });
-    }
+    if (!reason || reason.trim() === "") return res.status(400).json({ error: "Rejection reason is required" });
 
     const grievance = await Grievance.findByIdAndUpdate(
       req.params.id,
@@ -93,10 +116,53 @@ router.put('/:id/reject', async (req, res) => {
     );
     if (!grievance) return res.status(404).json({ error: "Grievance not found" });
 
+    // Send email to student
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: grievance.email,
+      subject: 'Grievance Rejected ❌',
+      text: `Hello ${grievance.name},\n\nYour grievance has been rejected.\nReason: ${reason}\n\nRegards,\nHostel Team`
+    };
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) console.error('❌ Email sending error:', err);
+      else console.log('📧 Email sent:', info.response);
+    });
+
     res.json({ message: "❌ Grievance rejected", data: grievance });
   } catch (err) {
     console.error("❌ Error rejecting grievance:", err);
     res.status(500).json({ error: "Failed to reject grievance" });
+  }
+});
+
+// =======================
+// Forward to Warden
+// =======================
+router.put('/:id/forward', async (req, res) => {
+  try {
+    const grievance = await Grievance.findByIdAndUpdate(
+      req.params.id,
+      { forwardedToWarden: true },
+      { new: true }
+    );
+    if (!grievance) return res.status(404).json({ error: "Grievance not found" });
+
+    // Send email to student
+    const mailOptions = {
+      from: process.env.EMAIL,
+      to: grievance.email,
+      subject: 'Grievance Forwarded ➡️',
+      text: `Hello ${grievance.name},\n\nYour grievance has been forwarded to the Warden for further action.\n\nRegards,\nHostel Team`
+    };
+    transporter.sendMail(mailOptions, (err, info) => {
+      if (err) console.error('❌ Email sending error:', err);
+      else console.log('📧 Email sent:', info.response);
+    });
+
+    res.json({ message: "➡️ Grievance forwarded to Warden", data: grievance });
+  } catch (err) {
+    console.error("❌ Error forwarding grievance:", err);
+    res.status(500).json({ error: "Failed to forward grievance" });
   }
 });
 

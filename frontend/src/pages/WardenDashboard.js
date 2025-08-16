@@ -54,7 +54,7 @@ const WardenDashboard = () => {
     { label: 'Manage Students', path: '/warden-dashboard/manage-students', icon: <FaUsers /> },
     { label: 'View Allotments', path: '/warden-dashboard/view-allotments', icon: <FaClipboardList /> },
     { label: 'Mess Reductions', path: '/warden-dashboard/Mess_Reduction_Application', icon: <FaUtensils /> },
-    { label: 'Student Grievances', path: '/warden-dashboard/grievances', icon: <FaCommentDots /> },
+    { label: 'Student Grievances', path: '/warden-dashboard/warden_grievances', icon: <FaCommentDots /> },
     { label: 'Notice Board', path: '/warden-dashboard/Notice', icon: <FaBullhorn /> },
      { label: 'Search History', path: '/warden-dashboard/History', icon: <FaBullhorn /> },
   ];

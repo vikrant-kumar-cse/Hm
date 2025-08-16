@@ -1,24 +1,21 @@
-// models/Grievance.js
 const mongoose = require("mongoose");
 
-const grievanceSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  branch: { type: String, required: true },
-  rollNumber: { type: String, required: true },
-  problem: { type: String, required: true },
-
-  // Path to uploaded document
-  documentPath: { type: String, default: "" },
-
-  // Status of grievance
-  status: {
-    type: String,
-    enum: ["Pending", "Solved", "Rejected"],
-    default: "Pending",
+const GrievanceSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true }, // new email field
+    branch: { type: String, required: true },
+    rollNumber: { type: String, required: true },
+    hostel: { type: String, required: true },
+    floor: { type: String, required: true },
+    grievanceType: { type: String, required: true },
+    problem: { type: String, required: true },
+    document: String,
+    status: { type: String, default: "Pending" },
+    rejectionReason: String,
+    forwardedToWarden: { type: Boolean, default: false } // new field
   },
+  { timestamps: true }
+);
 
-  // Reason only needed if rejected
-  rejectionReason: { type: String, default: "" },
-});
-
-module.exports = mongoose.model("Grievance", grievanceSchema);
+module.exports = mongoose.model("Grievance", GrievanceSchema);
