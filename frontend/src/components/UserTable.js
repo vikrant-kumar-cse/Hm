@@ -1,90 +1,17 @@
 import React, { useEffect, useState } from "react";
-
-const styles = {
-  container: {
-    marginLeft: "70px",
-    padding: "30px",
-    backgroundColor: "#edf2f7",
-    minHeight: "100vh",
-    fontFamily: "'Arial', sans-serif",
-  },
-  title: {
-    fontSize: "36px",
-    fontWeight: "700",
-    marginBottom: "20px",
-    color: "#333",
-  },
-  subtitle: {
-    fontSize: "24px",
-    fontWeight: "600",
-    marginBottom: "20px",
-    color: "#555",
-  },
-  searchInput: {
-    padding: "12px",
-    width: "300px",
-    marginBottom: "30px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "16px",
-    backgroundColor: "#fff",
-  },
-  table: {
-    width: "100%",
-    maxWidth: "1000px",
-    margin: "0 auto",
-    borderCollapse: "collapse",
-    backgroundColor: "#fff",
-    boxShadow: "0 0 12px rgba(0,0,0,0.1)",
-  },
-  th: {
-    padding: "14px 20px",
-    backgroundColor: "#f2f6f9",
-    fontWeight: "600",
-    border: "1px solid #e2e8f0",
-    textAlign: "left",
-    color: "#333",
-  },
-  td: {
-    padding: "14px 20px",
-    border: "1px solid #e2e8f0",
-    color: "#555",
-  },
-  deleteButton: {
-    backgroundColor: "#e74c3c",
-    color: "#fff",
-    border: "none",
-    padding: "10px 15px",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "600",
-    transition: "background-color 0.3s",
-  },
-  updateButton: {
-    backgroundColor: "#3498db",
-    color: "#fff",
-    border: "none",
-    padding: "10px 15px",
-    borderRadius: "6px",
-    cursor: "pointer",
-    fontWeight: "600",
-    transition: "background-color 0.3s",
-  },
-  inputField: {
-    padding: "12px",
-    marginBottom: "15px",
-    width: "250px",
-    borderRadius: "8px",
-    border: "1px solid #ddd",
-    fontSize: "16px",
-    backgroundColor: "#fff",
-  },
-  noUser: {
-    textAlign: "center",
-    padding: "20px",
-    color: "#aaa",
-  },
-};
+import {
+  Container,
+  Table,
+  Input,
+  Button,
+  Card,
+  CardBody,
+  CardTitle,
+  CardSubtitle,
+  Form,
+  FormGroup,
+  Label,
+} from "reactstrap";
 
 const AdminUsersPage = () => {
   const [users, setUsers] = useState([]);
@@ -134,22 +61,15 @@ const AdminUsersPage = () => {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
-      if (res.ok) {
-        fetchUsers();
-      } else {
-        console.error("Failed to delete user");
-      }
+      if (res.ok) fetchUsers();
+      else console.error("Failed to delete user");
     } catch (err) {
       console.error("Error deleting user:", err);
     }
   };
 
   const updateUserDetails = async () => {
-    if (!userDetails.userId) {
-      console.log("No User ID found for update.");
-      return;
-    }
+    if (!userDetails.userId) return;
 
     const { name, email, role, userId } = userDetails;
     try {
@@ -183,84 +103,100 @@ const AdminUsersPage = () => {
   );
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.title}>Welcome, {adminName}!</h1>
-      <h2 style={styles.subtitle}>Manage Users</h2>
+    <Container className="py-4">
+      <Card className="mb-4 shadow-sm">
+        <CardBody>
+          <CardTitle tag="h2">Welcome, {adminName}!</CardTitle>
+          <CardSubtitle className="text-muted mb-3">
+            Manage Users
+          </CardSubtitle>
+        </CardBody>
+      </Card>
 
       {userDetails.userId && (
-        <div style={{ marginBottom: "30px" }}>
-          <h3>Update User Details</h3>
-          <input
-            type="text"
-            placeholder="Name"
-            value={userDetails.name}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, name: e.target.value })
-            }
-            style={styles.inputField}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={userDetails.email}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, email: e.target.value })
-            }
-            style={styles.inputField}
-          />
-          <input
-            type="text"
-            placeholder="Role"
-            value={userDetails.role}
-            onChange={(e) =>
-              setUserDetails({ ...userDetails, role: e.target.value })
-            }
-            style={styles.inputField}
-          />
-          <button
-            onClick={updateUserDetails}
-            style={styles.updateButton}
-            disabled={
-              !userDetails.name || !userDetails.email || !userDetails.role
-            }
-          >
-            Update User
-          </button>
-        </div>
+        <Card className="mb-4 shadow-sm">
+          <CardBody>
+            <CardTitle tag="h4">Update User Details</CardTitle>
+            <Form>
+              <FormGroup>
+                <Label>Name</Label>
+                <Input
+                  type="text"
+                  value={userDetails.name}
+                  onChange={(e) =>
+                    setUserDetails({ ...userDetails, name: e.target.value })
+                  }
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>Email</Label>
+                <Input
+                  type="email"
+                  value={userDetails.email}
+                  onChange={(e) =>
+                    setUserDetails({ ...userDetails, email: e.target.value })
+                  }
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>Role</Label>
+                <Input
+                  type="text"
+                  value={userDetails.role}
+                  onChange={(e) =>
+                    setUserDetails({ ...userDetails, role: e.target.value })
+                  }
+                />
+              </FormGroup>
+              <Button
+                color="primary"
+                onClick={updateUserDetails}
+                disabled={
+                  !userDetails.name || !userDetails.email || !userDetails.role
+                }
+              >
+                Update User
+              </Button>
+            </Form>
+          </CardBody>
+        </Card>
       )}
 
-      <input
+      <Input
         type="text"
         placeholder="Search by email..."
-        style={styles.searchInput}
+        className="mb-3"
         value={searchQuery}
         onChange={(e) => setSearchQuery(e.target.value)}
       />
 
-      <table style={styles.table}>
-        <thead>
+      <Table bordered hover responsive>
+        <thead className="table-light">
           <tr>
-            <th style={styles.th}>Name</th>
-            <th style={styles.th}>Email</th>
-            <th style={styles.th}>Role</th>
-            <th style={styles.th}>Actions</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th width="200px">Actions</th>
           </tr>
         </thead>
         <tbody>
           {filteredUsers.length === 0 ? (
             <tr>
-              <td colSpan="4" style={styles.noUser}>
+              <td colSpan="4" className="text-center text-muted">
                 No users found.
               </td>
             </tr>
           ) : (
             filteredUsers.map((user) => (
               <tr key={user._id}>
-                <td style={styles.td}>{user.name}</td>
-                <td style={styles.td}>{user.email}</td>
-                <td style={styles.td}>{user.role}</td>
-                <td style={styles.td}>
-                  <button
+                <td>{user.name}</td>
+                <td>{user.email}</td>
+                <td>{user.role}</td>
+                <td>
+                  <Button
+                    color="info"
+                    size="sm"
+                    className="me-2"
                     onClick={() =>
                       setUserDetails({
                         name: user.name,
@@ -269,23 +205,23 @@ const AdminUsersPage = () => {
                         userId: user._id,
                       })
                     }
-                    style={styles.updateButton}
                   >
                     Update
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    color="danger"
+                    size="sm"
                     onClick={() => deleteUser(user._id)}
-                    style={styles.deleteButton}
                   >
                     Delete
-                  </button>
+                  </Button>
                 </td>
               </tr>
             ))
           )}
         </tbody>
-      </table>
-    </div>
+      </Table>
+    </Container>
   );
 };
 

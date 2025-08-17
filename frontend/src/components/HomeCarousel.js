@@ -11,6 +11,7 @@ import StudentAccessSection from './StudentAccessSection';
 import Navbar from './Navbar';
 import Footer from './Footer';
 
+
 const HomeCarousel = () => {
   const [notices, setNotices] = useState([]);
 

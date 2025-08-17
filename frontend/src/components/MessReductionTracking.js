@@ -10,7 +10,7 @@ const StatusTracker = () => {
 
   const fetchRequest = async () => {
     if (!rollNumber.trim()) {
-      setError('Please enter a roll number');
+      setError('⚠️ Please enter a roll number');
       setRequest(null);
       return;
     }
@@ -19,7 +19,7 @@ const StatusTracker = () => {
     setRequest(null);
 
     try {
-      const res = await fetch(`${BASE_URL}/${rollNumber.trim()}`); // matches backend /status/:rollNumber
+      const res = await fetch(`${BASE_URL}/${rollNumber.trim()}`);
       if (!res.ok) {
         if (res.status === 404) {
           throw new Error('No request found for this roll number');
@@ -28,7 +28,7 @@ const StatusTracker = () => {
         }
       }
       const data = await res.json();
-      setRequest(data); // backend returns a single object now
+      setRequest(data);
     } catch (err) {
       setError(err.message || 'Error fetching request data');
     } finally {
@@ -44,9 +44,7 @@ const StatusTracker = () => {
   ];
 
   const isStageApproved = (key) => {
-    if (key === 'finalApproval') {
-      return request?.finalApproval === true;
-    }
+    if (key === 'finalApproval') return request?.finalApproval === true;
     return request ? request[key] === true : false;
   };
 
@@ -70,7 +68,8 @@ const StatusTracker = () => {
         Mess Reduction Status Tracker
       </h2>
 
-      <div style={{ textAlign: 'center', marginBottom: 30 }}>
+      {/* Roll number input hamesha upar rahega */}
+      <div style={{ textAlign: 'center', marginBottom: 20 }}>
         <input
           type="text"
           placeholder="Enter your roll number"
@@ -100,11 +99,9 @@ const StatusTracker = () => {
             backgroundColor: '#007bff',
             color: 'white',
             cursor: 'pointer',
-            marginTop: 10,
-            display: 'inline-block',
           }}
         >
-          Search
+          Track
         </button>
       </div>
 
@@ -116,6 +113,7 @@ const StatusTracker = () => {
         </p>
       )}
 
+      {/* Tracker yahi par show hoga (same layer) */}
       {request && (
         <>
           <div
@@ -138,7 +136,6 @@ const StatusTracker = () => {
             </span>
           </div>
 
-          {/* Vertical Tracker */}
           <div
             style={{
               display: 'flex',
@@ -152,7 +149,6 @@ const StatusTracker = () => {
           >
             {stages.map((stage, index) => {
               const approved = isStageApproved(stage.key);
-
               return (
                 <div
                   key={stage.key}
@@ -160,8 +156,6 @@ const StatusTracker = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    cursor: 'default',
-                    userSelect: 'none',
                   }}
                 >
                   <div

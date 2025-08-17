@@ -1,7 +1,13 @@
-const { login, sendEmailVerification, verifyAndSignup,forgotpassword,resetPassword } = require('../Controllers/AuthController');
-const { emailValidationforSignup,signupValidation, loginValidation } = require('../Middlewares/AuthValidation');
+const { login, sendEmailVerification, verifyAndSignup,forgotpassword,resetPassword,getProfile} = require('../Controllers/AuthController');
+const { emailValidationforSignup,signupValidation, loginValidation, } = require('../Middlewares/AuthValidation');
 const { Parser } = require("json2csv");
 const ExcelJS = require("exceljs");
+const dotenv=require('dotenv')
+const jwt = require("jsonwebtoken");
+dotenv.config()
+
+const User = require('../Models/User');
+
 //const User = require("./Models/User");
 
 
@@ -33,10 +39,11 @@ router.get('/admin', auth, role('admin'), (req, res) => {
 
 
 
+  router.get("/profile",auth,getProfile)
+  
 
 
-// routes/adminRoutes.js
-const User = require('../Models/User'); // ✅ REQUIRED
+
 
 router.get('/users', auth, role('admin'), async (req, res) => {
   try {
