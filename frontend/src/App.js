@@ -39,6 +39,7 @@ import TodayDeductions from './components/TodayDeductions';
 import MessTrendsChart from './components/Analytics';
 import StudentGrievance from './components/StudentGrievance';
 import WardenGrievances from './components/WardenGrievances';
+import LifeGecwc from './pages/lifegecwc';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -71,6 +72,7 @@ function App() {
         <Route path="/notice" element={<NoticesSection />} />
         <Route path="/about" element={<AboutHostel />} />
         <Route path="/navigation" element={<Navigation />} />
+        <Route path="/life" element={ < LifeGecwc />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SendVerificationEmail />} />
         <Route path="/forgot-password" element={<SennForgotpasswordmail />} />
