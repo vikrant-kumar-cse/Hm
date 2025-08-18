@@ -26,11 +26,12 @@ function AllotmentForm() {
     district: '',
     state: '',
     country: '',
+    email: '',          // ✅ Added for personal email
     mobile: '',
     altContact: '',
     contactFirstName: '',
     contactLastName: '',
-    email: '',
+    emergencyEmail: '', // ✅ Changed emergency email key to avoid conflict
     mobilee: '',
     rollNumber: '',
     regNumber: '',
@@ -87,6 +88,7 @@ function AllotmentForm() {
       district: formData.district,
       state: formData.state,
       country: formData.country,
+      email: formData.email,       // ✅ Send personal email
       mobile: formData.mobile,
       altContact: formData.altContact
     };
@@ -94,7 +96,7 @@ function AllotmentForm() {
     const emergency = {
       contactFirstName: formData.contactFirstName,
       contactLastName: formData.contactLastName,
-      email: formData.email,
+      email: formData.emergencyEmail,  // ✅ emergency email separated
       mobile: formData.mobilee
     };
 
@@ -254,10 +256,18 @@ function AllotmentForm() {
             <Row>
               <Col md={6}>
                 <FormGroup>
+                  <Label style={labelStyle}>Personal Email</Label> {/* ✅ New Email Field */}
+                  <Input type="email" id="email" value={formData.email} onChange={handleChange} placeholder="Enter your Email" required />
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup>
                   <Label style={labelStyle}>Mobile Number</Label>
                   <Input type="text" id="mobile" value={formData.mobile} onChange={handleChange} placeholder="Enter your Mobile Number" required />
                 </FormGroup>
               </Col>
+            </Row>
+            <Row>
               <Col md={6}>
                 <FormGroup>
                   <Label style={labelStyle}>Alternate Contact Number</Label>
@@ -290,7 +300,7 @@ function AllotmentForm() {
               <Col md={6}>
                 <FormGroup>
                   <Label style={labelStyle}>Email Address</Label>
-                  <Input type="email" id="email" value={formData.email} onChange={handleChange} placeholder="Enter Email" required />
+                  <Input type="email" id="emergencyEmail" value={formData.emergencyEmail} onChange={handleChange} placeholder="Enter Emergency Email" required />
                 </FormGroup>
               </Col>
               <Col md={6}>

@@ -15,6 +15,13 @@ const allotmentSchema = new mongoose.Schema({
     country: String,
     mobile: String,
     altContact: String,
+    email: {       // ✅ Added student email
+      type: String,
+      required: true,
+      unique: true, // prevents duplicate email entries
+      lowercase: true,
+      trim: true
+    }
   },
   emergency: {
     contactFirstName: String,

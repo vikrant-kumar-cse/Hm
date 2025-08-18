@@ -16,6 +16,7 @@ const MessReduction = () => {
     semester: '',
     session: '',
     roomNo: '',
+    email: '',        // ✅ email added
     dateFrom: '',
     dateTo: '',
     numDays: '',
@@ -54,6 +55,7 @@ const MessReduction = () => {
     finalData.append('rollNumber', formData.rollNo);
     finalData.append('branchAndSem', `${formData.branch}, ${formData.semester}`);
     finalData.append('roomNo', formData.roomNo);
+    finalData.append('email', formData.email); // ✅ email included
     finalData.append('fromDate', formData.dateFrom);
     finalData.append('toDate', formData.dateTo);
     finalData.append('numberOfDays', formData.numDays);
@@ -79,6 +81,7 @@ const MessReduction = () => {
         semester: '',
         session: '',
         roomNo: '',
+        email: '',   // ✅ reset email
         dateFrom: '',
         dateTo: '',
         numDays: '',
@@ -164,6 +167,17 @@ const MessReduction = () => {
               </Input>
             </Col>
           </Row>
+        </FormGroup>
+
+        <FormGroup>
+          <Label for="email" className="fw-bold">Email</Label> {/* ✅ new email input */}
+          <Input
+            type="email"
+            id="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
         </FormGroup>
 
         <FormGroup>

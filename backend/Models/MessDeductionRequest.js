@@ -10,6 +10,7 @@ const messDeductionRequestSchema = new mongoose.Schema({
   fromDate: Date,
   toDate: Date,
   reason: String,
+  email: { type: String, required: true },  // ✅ student email
   documents: {
     document: String,
   },
@@ -20,8 +21,8 @@ const messDeductionRequestSchema = new mongoose.Schema({
   },
   wardenApproval: { type: Boolean, default: false },
   messManagerApproval: { type: Boolean, default: false },
-  caretackerApproval:{type:Boolean,default: false},
-  rejectionReason: { type: String, default: "" }, // ✅ Added field
+  caretackerApproval: { type: Boolean, default: false },
+  rejectionReason: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
 });
 

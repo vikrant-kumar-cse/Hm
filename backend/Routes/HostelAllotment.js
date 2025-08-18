@@ -159,15 +159,30 @@ router.put('/approve/:id', async (req, res) => {
 });
 
 // ✅ PUT /hostel/caretacker-approve/:id — Caretaker Approve allotment
+// ✅ PUT /hostel/caretacker-approve/:id — Caretaker Approve allotment
 router.put('/caretacker-approve/:id', async (req, res) => {
   try {
-    const updated = await Allotment.findByIdAndUpdate(req.params.id, {
-      status: 'Approved',
-      caretackerApproval: true,
-      approvedAt: new Date()
-    }, { new: true });
+    const updated = await Allotment.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: 'Approved',
+        caretackerApproval: true,
+        approvedAt: new Date()
+      },
+      { new: true }
+    );
 
     if (!updated) return res.status(404).json({ message: 'Not found' });
+
+    // 📧 Send email to student
+    const sendMail = require("../utils/sendEmail");
+    if (updated.personal?.email) {
+      await sendMail(
+        updated.personal.email,
+        "Hostel Allotment Approved ✅",
+        `Dear ${updated.personal.firstName},\n\nYour hostel allotment request has been approved by the caretaker.\n\nHostel: ${updated.hostel?.hostelName}\nRoom: ${updated.hostel?.roomNumber}\n\nRegards,\nHostel Management`
+      );
+    }
 
     res.status(200).json({ message: 'Approved successfully', data: updated });
   } catch (err) {
@@ -197,17 +212,32 @@ router.put('/reject/:id', async (req, res) => {
 });
 
 // ✅ PUT /hostel/caretacker-reject/:id — Caretaker Reject allotment
+// ✅ PUT /hostel/caretacker-reject/:id — Caretaker Reject allotment
 router.put('/caretacker-reject/:id', async (req, res) => {
   try {
     const { reason } = req.body;
-    const updated = await Allotment.findByIdAndUpdate(req.params.id, {
-      status: 'Rejected',
-      caretackerApproval: false,
-      rejectedAt: new Date(),
-      rejectionReason: reason || 'No reason provided'
-    }, { new: true });
+    const updated = await Allotment.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: 'Rejected',
+        caretackerApproval: false,
+        rejectedAt: new Date(),
+        rejectionReason: reason || 'No reason provided'
+      },
+      { new: true }
+    );
 
     if (!updated) return res.status(404).json({ message: 'Not found' });
+
+    // 📧 Send email to student
+    const sendMail = require("../utils/sendEmail");
+    if (updated.personal?.email) {
+      await sendMail(
+        updated.personal.email,
+        "Hostel Allotment Rejected ❌",
+        `Dear ${updated.personal.firstName},\n\nWe regret to inform you that your hostel allotment request has been rejected by the caretaker.\nReason: ${updated.rejectionReason}\n\nRegards,\nHostel Management`
+      );
+    }
 
     res.status(200).json({ message: 'Rejected successfully', data: updated });
   } catch (err) {
@@ -215,6 +245,7 @@ router.put('/caretacker-reject/:id', async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
 
 // ✅ GET /hostel/:id — Get single record by ID
 // IMPORTANT: This MUST be the LAST route because it catches everything
