@@ -5,6 +5,8 @@ const path = require('path');
 const fs = require('fs');
 const mongoose = require("mongoose");
 const MessDeductionRequest = require('../Models/MessDeductionRequest');
+const sendEmail = require('../utils/sendEmail');  // ✅ add this line
+
 
 // Multer setup for uploads
 const storage = multer.diskStorage({
@@ -25,6 +27,7 @@ const upload = multer({
 });
 
 // POST /messdeduction/mess — Submit request with file
+// POST /messdeduction/mess — Submit request with file
 router.post('/mess', upload.single('document'), async (req, res) => {
   try {
     const {
@@ -36,7 +39,8 @@ router.post('/mess', upload.single('document'), async (req, res) => {
       numberOfDays,
       fromDate,
       toDate,
-      reason
+      reason,
+      email   // ✅ email frontend se aayega
     } = req.body;
 
     const documents = {};
@@ -44,7 +48,6 @@ router.post('/mess', upload.single('document'), async (req, res) => {
       documents.document = req.file.filename;
     }
 
-    // Set initial status to 'Pending'
     const newRequest = new MessDeductionRequest({
       studentID,
       nameOfStudent,
@@ -55,12 +58,15 @@ router.post('/mess', upload.single('document'), async (req, res) => {
       fromDate,
       toDate,
       reason,
+      email,   // ✅ save in DB
       documents,
-      status: 'Pending',         // <-- Added initial status
+      status: 'Pending',
       wardenApproval: false,
       messManagerApproval: false,
       caretackerApproval: false
     });
+
+    await newRequest.save();
 
     await newRequest.save();
 
@@ -332,9 +338,9 @@ router.get('/caretacker/requests', async (req, res) => {
   }
 });
 
-router.put('/approve-caretaker/:id', async(req,res) => {
+router.put('/approve-caretaker/:id', async (req, res) => {
   try {
-    const {id} = req.params;
+    const { id } = req.params;
 
     const updatedRequest = await MessDeductionRequest.findByIdAndUpdate(
       id,
@@ -345,17 +351,37 @@ router.put('/approve-caretaker/:id', async(req,res) => {
       },
       { new: true }
     );
+
     if (!updatedRequest) {
       return res.status(404).json({ message: 'Mess deduction request not found' });
     }
 
+    // ✅ Student ko email bhejna
+    const subject = "Mess Deduction Approved by Caretaker";
+    const html = `
+      <p>Dear ${updatedRequest.nameOfStudent},</p>
+      <p>Your Mess Deduction request has been <b>approved by the caretaker</b>.</p>
+      <p><b>Details:</b></p>
+      <ul>
+        <li>Roll No: ${updatedRequest.rollNumber}</li>
+        <li>From: ${updatedRequest.fromDate}</li>
+        <li>To: ${updatedRequest.toDate}</li>
+        <li>Reason: ${updatedRequest.reason}</li>
+      </ul>
+      <p>Thank you.</p>
+    `;
+
+    // ⚠️ dhyaan rahe model me student ka email field ho (maan ke chal ra hu hai)
+    await sendEmail(updatedRequest.email, subject, html);
+
     res.status(200).json({
-      message: 'Mess deduction request approved successfully',
+      message: 'Mess deduction request approved & email sent successfully',
       data: updatedRequest
     });
 
-  } catch(error) {
-    res.status(500).json({message:'Server Error'});
+  } catch (error) {
+    console.error("Error in caretaker approval:", error);
+    res.status(500).json({ message: 'Server Error' });
   }
 });
 
