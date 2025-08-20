@@ -22,6 +22,7 @@ import MessReduction from './components/MessReduction';
 import MessReductionTracking from './components/MessReductionTracking';
 import UserTable from './components/UserTable';
 import VerifyRedirect from './pages/VerifyRedirect';
+
 import SennForgotpasswordmail from './pages/forgotpassword';
 import ResetPasswordRedirect from './pages/ResetPasswordRedirect';
 import { useState } from 'react';
@@ -40,6 +41,7 @@ import MessTrendsChart from './components/Analytics';
 import StudentGrievance from './components/StudentGrievance';
 import WardenGrievances from './components/WardenGrievances';
 import LifeGecwc from './pages/lifegecwc';
+import ContactUs from './components/ContactUs';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -91,6 +93,7 @@ function App() {
           <Route path="mess-calendar" element={<Grievance/>} />
           <Route path="grievance" element={<Grievance/>} />
           <Route path="rules" element={<RulesAndRegulations />} />
+              <Route path="contact-us" element={<ContactUs />} />
         </Route>
 
         <Route path="/admin-login" element={<AdminLogin />} />

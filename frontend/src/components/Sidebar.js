@@ -84,15 +84,8 @@ function Sidebar({ title = "Dashboard", routes = [] }) {
           ))}
         </Nav>
 
-        <Button
-          outline
-          color="primary"
-          className={`sidebar-button ${clickedButton === 'contact' ? 'clicked' : ''}`}
-          onClick={() => handleButtonClick('contact')}
-          style={{ marginLeft: '35px', marginTop: '50px', width: '140px' }}
-        >
-          <FaPhoneAlt className="me-2" /> Contact Us
-        </Button>
+    
+
 
         <Button
           outline

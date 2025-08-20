@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Outlet } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate, Outlet, Link, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { Container, Row, Col } from 'react-bootstrap';
-import { FaBell } from 'react-icons/fa';
+import { Container, Row, Col, Nav, NavItem, Button } from 'react-bootstrap';
+import { FaBell, FaBars, FaPhoneAlt, FaSignOutAlt } from 'react-icons/fa';
 import { io } from 'socket.io-client';
-import Sidebar from '../components/Sidebar';
+import { handleSuccess } from '../utils';
 import 'react-toastify/dist/ReactToastify.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const socket = io('http://localhost:8080'); // Replace with your server URL
 
@@ -13,7 +14,12 @@ function UserDashboard() {
   const [loggedInUser, setLoggedInUser] = useState('');
   const [notifications, setNotifications] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [clickedButton, setClickedButton] = useState(null);
+  const sidebarRef = useRef();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const studentRoutes = [
     { label: 'Student Profile', path: '/user-dashboard/student-profile' },
@@ -24,11 +30,32 @@ function UserDashboard() {
     { label: 'Grievance', path: '/user-dashboard/grievance' },
   ];
 
+  // ✅ Handle responsive sidebar
+  useEffect(() => {
+    const handleResize = () => {
+      const isNowMobile = window.innerWidth <= 768;
+      setIsMobile(isNowMobile);
+      if (!isNowMobile) setIsSidebarOpen(false);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (isSidebarOpen && sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+        setIsSidebarOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isSidebarOpen]);
+
+  // ✅ Load user + socket notifications
   useEffect(() => {
     const user = localStorage.getItem('loggedInUser');
     setLoggedInUser(user || 'User');
 
-    // Join socket listener after fetching user roll number
     const rollNumber = JSON.parse(localStorage.getItem('studentData'))?.rollNumber;
     if (rollNumber) {
       socket.on(`mess-approved-${rollNumber}`, (data) => {
@@ -43,9 +70,30 @@ function UserDashboard() {
     };
   }, []);
 
+  // ✅ Sidebar actions
+  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+
+  const handleLogout = () => {
+    const role = localStorage.getItem('role');
+    localStorage.clear();
+    handleSuccess('User Logged out');
+    setTimeout(() => {
+      if (role === 'warden') navigate('/warden-login');
+      else if (role === 'admin') navigate('/admin-login');
+      else if (role === 'care-tacker') navigate('/hostel-care-tacker-login');
+      else if (role === 'mess_manager') navigate('/mess_manager-login');
+      else navigate('/login');
+    }, 1000);
+  };
+
+  const handleButtonClick = (btn) => {
+    setClickedButton(btn);
+    setTimeout(() => setClickedButton(null), 300);
+  };
+
   const handleNotificationClick = () => {
     setShowDropdown(!showDropdown);
-    setNotifications([]); // Mark all as read
+    setNotifications([]); // mark as read
   };
 
   return (
@@ -53,7 +101,63 @@ function UserDashboard() {
       <Row>
         {/* Sidebar */}
         <Col md={2} className="p-0">
-          <Sidebar title="Student Dashboard" routes={studentRoutes} />
+          {isMobile && (
+            <div className="mobile-topbar d-flex justify-content-between align-items-center px-3 py-2 bg-light">
+              <Link to="/" className="navbar-brand text-primary fs-5 m-0">Student Dashboard</Link>
+              <FaBars size={24} onClick={toggleSidebar} style={{ cursor: 'pointer', color: '#000' }} />
+            </div>
+          )}
+
+          <div
+            ref={sidebarRef}
+            className={`sidebar bg-white shadow-sm ${isMobile ? 'mobile-sidebar' : ''} ${isSidebarOpen ? 'open' : ''}`}
+            style={{ minHeight: '100vh' }}
+          >
+            <Nav className="flex-column p-3">
+              <Link to="/" className="navbar-brand text-primary fs-5 m-0"><b>Student Dashboard</b></Link><br />
+              {studentRoutes.map(({ label, path }) => (
+                <NavItem key={path}>
+                  <Link
+                    to={path}
+                    className={`nav-link d-flex align-items-center gap-2 ${location.pathname === path ? 'active-link text-primary fw-bold' : 'text-dark'}`}
+                    onClick={() => isMobile && setIsSidebarOpen(false)}
+                  >
+                    {label}
+                  </Link>
+                </NavItem>
+              ))}
+            </Nav>
+
+            {/* Contact Us */}
+            <Button
+              variant="outline-primary"
+              className={`sidebar-button ms-3 mt-5 w-75 ${clickedButton === 'contact' ? 'clicked' : ''}`}
+              onClick={() => {
+                setClickedButton('contact');
+                navigate('/user-dashboard/contact-us');
+              }}
+            >
+              <FaPhoneAlt className="me-2" /> Contact Us
+            </Button>
+
+            {/* Logout */}
+            <Button
+              variant="outline-danger"
+              className={`sidebar-button ms-3 mt-3 w-75 ${clickedButton === 'logout' ? 'clicked' : ''}`}
+              onClick={() => {
+                handleButtonClick('logout');
+                if (window.confirm('Are you sure you want to logout?')) {
+                  handleLogout();
+                }
+              }}
+            >
+              <FaSignOutAlt className="me-2" /> Logout
+            </Button>
+          </div>
+
+          {isMobile && isSidebarOpen && (
+            <div className="overlay" onClick={() => setIsSidebarOpen(false)}></div>
+          )}
         </Col>
 
         {/* Main Content */}
