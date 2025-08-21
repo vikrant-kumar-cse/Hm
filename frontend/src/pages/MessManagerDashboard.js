@@ -21,7 +21,8 @@ const MessManagerDashboard = () => {
   const Mess_MangRoutes = [
     { label: 'Manage Students', path: '/mess_manager-dashboard/manage-students' },
     { label: 'Mess Reductions', path: '/mess_manager-dashboard/Mess-Red-Req' },
-     { label: 'Mess Deducted Today', path: '/mess_manager-dashboard/Mess-ded-today' },
+    { label: 'Mess Deducted Today', path: '/mess_manager-dashboard/Mess-ded-today' },
+    { label: 'DownloadRecord',path:'/mess_manager-dashboard/downloadrecord'}
     
   ];
 

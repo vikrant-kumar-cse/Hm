@@ -24,6 +24,8 @@ const messDeductionRequestSchema = new mongoose.Schema({
   caretackerApproval: { type: Boolean, default: false },
   rejectionReason: { type: String, default: "" },
   createdAt: { type: Date, default: Date.now },
+
+  approvedAt:{type:Date}
 });
 
 module.exports = mongoose.model("MessDeductionRequest", messDeductionRequestSchema);

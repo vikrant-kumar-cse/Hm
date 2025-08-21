@@ -42,6 +42,7 @@ import StudentGrievance from './components/StudentGrievance';
 import WardenGrievances from './components/WardenGrievances';
 import LifeGecwc from './pages/lifegecwc';
 import ContactUs from './components/ContactUs';
+import MessDownload from './components/downloadrecord'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -132,6 +133,7 @@ function App() {
                <Route path="Mess-Red-Req" element={<MessManagerRequests  />} />
                <Route path="admin-create" element={<h3>✏️ Create Sub Admin Page</h3>} />
                <Route path="Mess-ded-today" element={<TodayDeductions />} />
+               <Route path="downloadrecord" element={<MessDownload />} />
         
         </Route>
         

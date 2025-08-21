@@ -57,6 +57,7 @@ app.use('/messdeduction', require('./Routes/messDeductionRoutes'));
 app.use('/hostel-allotment', require('./Routes/HostelAllotment'));
 app.use('/notices', require('./Routes/noticeRoutes'));
 app.use('/analytic', require('./Routes/Analytics'));
+app.use('/messrecord',require('./Routes/ApprovedRecord'));
 
 // ✅ NEW: Grievance Route
 app.use('/grievance', require('./Routes/grievanceRoutes'));
