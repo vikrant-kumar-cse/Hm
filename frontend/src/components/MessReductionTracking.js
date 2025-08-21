@@ -39,8 +39,8 @@ const StatusTracker = () => {
   const stages = [
     { key: 'wardenApproval', label: 'Warden Approval' },
     { key: 'messManagerApproval', label: 'Mess Manager Approval' },
-    { key: 'caretackerApproval', label: 'Caretaker Approval' },
-    { key: 'finalApproval', label: 'Final Approval' },
+    { key: 'caretackerApproval', label: 'Caretaker Approval(Final Approval)' },
+    // { key: 'finalApproval', label: 'Final Approval' },
   ];
 
   const isStageApproved = (key) => {
