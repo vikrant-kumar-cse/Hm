@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CaretakerPendingRequests = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [approvingId, setApprovingId] = useState(null); // Track approval in progress
   const [modal, setModal] = useState({
     open: false,
     student: null,
@@ -47,6 +50,8 @@ const CaretakerPendingRequests = () => {
   };
 
   const handleApprove = async (id) => {
+    setApprovingId(id); // Show red loader on this request
+
     try {
       const res = await fetch(`http://localhost:8080/messdeduction/approve-caretaker/${id}`, {
         method: 'PUT',
@@ -55,11 +60,23 @@ const CaretakerPendingRequests = () => {
 
       if (!res.ok) throw new Error('Approval failed');
 
-      // Remove approved request from list to update UI
+      // Remove approved request
       setRequests((prev) => prev.filter((req) => req._id !== id));
-      alert('✅ Request approved successfully');
+
+      toast.success("Request approved successfully", {
+        autoClose: 3000,
+        closeOnClick: true,
+        position: "top-right"
+      });
+
     } catch {
-      alert('❌ Error approving request');
+      toast.error("Error approving request", {
+        autoClose: 3000,
+        closeOnClick: true,
+        position: "top-right"
+      });
+    } finally {
+      setApprovingId(null); // Hide loader after finish
     }
   };
 
@@ -76,7 +93,30 @@ const CaretakerPendingRequests = () => {
     }
   };
 
-  if (loading) return <div className="text-center mt-4"><div className="spinner-border" role="status" /></div>;
+  // Loader while fetching requests first time
+  if (loading) return (
+    <div className="text-center mt-5">
+      <div className="colorful-spinner"></div>
+      <style>{`
+        .colorful-spinner {
+          width: 60px;
+          height: 60px;
+          border: 6px solid transparent;
+          border-top: 6px solid #ff4b5c;
+          border-right: 6px solid #36d7b7;
+          border-bottom: 6px solid #f39c12;
+          border-left: 6px solid #3498db;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: auto;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>
+  );
 
   if (requests.length === 0) return <div className="alert alert-info mt-4">No pending requests to approve.</div>;
 
@@ -92,7 +132,13 @@ const CaretakerPendingRequests = () => {
                 <td>{idx + 1}</td>
                 <td rowSpan="7" className="text-center align-middle" style={{ width: '140px' }}>
                   <Button color="primary" size="sm" className="mb-2" onClick={() => handlePreview(student)}>Preview</Button>
-                  <Button color="success" size="sm" onClick={() => handleApprove(student._id)}>Approve</Button>
+                  
+                  {approvingId === student._id ? (
+                    // 🔴 Red loader only while approving this student
+                    <div className="red-spinner"></div>
+                  ) : (
+                    <Button color="success" size="sm" onClick={() => handleApprove(student._id)}>Approve</Button>
+                  )}
                 </td>
               </tr>
               <tr><td><strong>Name</strong></td><td>{student.nameOfStudent}</td></tr>
@@ -134,6 +180,26 @@ const CaretakerPendingRequests = () => {
           <Button color="secondary" onClick={toggleModal}>Close</Button>
         </ModalFooter>
       </Modal>
+
+      <ToastContainer position="top-right" theme="colored" />
+
+      {/* 🔴 Red loader style */}
+      <style>{`
+        .red-spinner {
+          width: 30px;
+          height: 30px;
+          border: 4px solid transparent;
+          border-top: 4px solid red;
+          border-right: 4px solid red;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          margin: auto;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

@@ -471,6 +471,24 @@ router.get('/status/:rollNumber', async (req, res) => {
     res.status(500).json({ message: 'Server Error' });
   }
 });
+   // DELETE /messdeduction/:id — Delete request by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await MessDeductionRequest.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: 'Request not found' });
+    }
+
+    res.status(200).json({ message: 'Request deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting request:', error);
+    res.status(500).json({ message: 'Server error while deleting request' });
+  }
+});
+
 
 
 

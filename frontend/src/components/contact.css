@@ -1,0 +1,7 @@
+  @media (max-width: 768px) {
+  .custom-card {
+    width: calc(100% - 40px); /* extra 30px spacing for mobile */
+    max-width: none; 
+    background-color: red;         /* remove fixed max width */
+  }
+}

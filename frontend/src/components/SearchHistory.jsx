@@ -31,6 +31,26 @@ const SearchHistory = () => {
     }
   };
 
+  // ✅ Delete request handler
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this request?")) {
+      try {
+        const res = await fetch(`http://localhost:8080/messdeduction/${id}`, {
+          method: "DELETE",
+        });
+
+        if (res.ok) {
+          setRequests(requests.filter((req) => req._id !== id)); // frontend se bhi remove karo
+        } else {
+          alert("Failed to delete request");
+        }
+      } catch (error) {
+        console.error("Error deleting request:", error);
+        alert("Error deleting request");
+      }
+    }
+  };
+
   // Apply filter and search by roll number
   const filteredRequests = requests.filter((req) => {
     const matchesStatus = filter === "All" || req.status === filter;
@@ -95,6 +115,7 @@ const SearchHistory = () => {
                 <th>To</th>
                 <th>Reason</th>
                 <th>Status</th>
+                <th>Action</th> {/* ✅ New Column */}
               </tr>
             </thead>
             <tbody>
@@ -109,6 +130,14 @@ const SearchHistory = () => {
                   <td>{new Date(req.toDate).toLocaleDateString()}</td>
                   <td>{req.reason}</td>
                   <td>{getStatusBadge(req.status)}</td>
+                  <td>
+                    <button
+                      className="btn btn-sm btn-danger"
+                      onClick={() => handleDelete(req._id)}
+                    >
+                      🗑 Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
