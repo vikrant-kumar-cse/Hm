@@ -18,6 +18,9 @@ const CaretakerAllotment_info = () => {
   const [rejectionReason, setRejectionReason] = useState('');
   const [currentRejectId, setCurrentRejectId] = useState(null);
 
+  // ✅ New state for loader on approve
+  const [approveLoadingId, setApproveLoadingId] = useState(null);
+
   const BASE_URL = 'http://localhost:8080/hostel-allotment';
 
   // Handle resize
@@ -30,13 +33,11 @@ const CaretakerAllotment_info = () => {
   // Fetch caretaker requests - show only warden-approved requests
   const fetchAllotments = async () => {
     try {
-      // Changed endpoint to caretaker-specific route
       const response = await fetch(`${BASE_URL}/caretaker-all-requests`);
       if (!response.ok) throw new Error('Failed to fetch data');
       const result = await response.json();
 
-      // Sirf wardenApproved true aur caretakerApproved false wale
-    const pendingForCaretaker = result.filter(
+      const pendingForCaretaker = result.filter(
         item => item.wardenApproval === true && item.caretackerApproval !== true
       );
 
@@ -61,8 +62,8 @@ const CaretakerAllotment_info = () => {
 
   // Caretaker Approve handler
   const handleApprove = async (id) => {
+    setApproveLoadingId(id); // ✅ start loader for this row
     try {
-      // Changed to caretaker-approve endpoint
       const res = await fetch(`${BASE_URL}/caretacker-approve/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -72,6 +73,8 @@ const CaretakerAllotment_info = () => {
       await fetchAllotments();
     } catch (error) {
       alert('Error while approving');
+    } finally {
+      setApproveLoadingId(null); // ✅ stop loader
     }
   };
 
@@ -90,7 +93,6 @@ const CaretakerAllotment_info = () => {
     }
 
     try {
-      // Changed to caretaker-reject endpoint
       const res = await fetch(`${BASE_URL}/caretacker-reject/${currentRejectId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -160,7 +162,13 @@ const CaretakerAllotment_info = () => {
                 <td>{index + 1}</td>
                 <td rowSpan="7" style={{ width: '150px' }} className="action-cell">
                   <Button color="primary" className="mb-2 w-100" onClick={() => handlePreview(student._id)}>Preview</Button>
-                  <Button color="success" className="mb-2 w-100" onClick={() => handleApprove(student._id)}>Approve</Button>
+
+                  {approveLoadingId === student._id ? (
+                    <div className="red-spinner mx-auto my-2"></div>
+                  ) : (
+                    <Button color="success" className="mb-2 w-100" onClick={() => handleApprove(student._id)}>Approve</Button>
+                  )}
+
                   <Button color="danger" className="mb-2 w-100" onClick={() => handleRejectClick(student._id)}>Reject</Button>
                 </td>
               </tr>
@@ -241,6 +249,23 @@ const CaretakerAllotment_info = () => {
           </Button>
         </ModalFooter>
       </Modal>
+
+      {/* 🔴 Red loader style */}
+      <style>{`
+        .red-spinner {
+          width: 28px;
+          height: 28px;
+          border: 4px solid transparent;
+          border-top: 4px solid red;
+          border-right: 4px solid red;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

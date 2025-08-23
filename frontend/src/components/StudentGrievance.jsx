@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Container, Row, Col, Spinner } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const GrievanceList = () => {
   const [grievances, setGrievances] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionId, setActionId] = useState(null); // track which grievance is in process
 
   // Fetch grievances
   const fetchData = async () => {
@@ -24,6 +27,7 @@ const GrievanceList = () => {
 
   // Handle Solved
   const handleSolved = async (id) => {
+    setActionId(id);
     try {
       const res = await fetch(`http://localhost:8080/grievance/${id}/solve`, {
         method: "PUT",
@@ -34,12 +38,15 @@ const GrievanceList = () => {
         setGrievances((prev) =>
           prev.map((g) => (g._id === id ? { ...g, status: "Solved" } : g))
         );
-        alert("✅ Grievance marked as solved.");
+        toast.success("✅ Grievance marked as solved.");
       } else {
-        alert("❌ Failed to update grievance.");
+        toast.error("❌ Failed to update grievance.");
       }
     } catch (err) {
       console.error("Error solving grievance:", err);
+      toast.error("❌ Error while solving grievance.");
+    } finally {
+      setActionId(null);
     }
   };
 
@@ -47,10 +54,11 @@ const GrievanceList = () => {
   const handleReject = async (id) => {
     const reason = prompt("⚠️ Enter rejection reason:");
     if (!reason || reason.trim() === "") {
-      alert("Rejection cancelled. No reason provided.");
+      toast.warning("⚠️ Rejection cancelled. No reason provided.");
       return;
     }
 
+    setActionId(id);
     try {
       const res = await fetch(`http://localhost:8080/grievance/${id}/reject`, {
         method: "PUT",
@@ -66,17 +74,21 @@ const GrievanceList = () => {
               : g
           )
         );
-        alert("❌ Grievance rejected.");
+        toast.error("❌ Grievance rejected.");
       } else {
-        alert("❌ Failed to reject grievance.");
+        toast.error("❌ Failed to reject grievance.");
       }
     } catch (err) {
       console.error("Error rejecting grievance:", err);
+      toast.error("❌ Error while rejecting grievance.");
+    } finally {
+      setActionId(null);
     }
   };
 
   // Handle Forward to Warden
   const handleForward = async (id) => {
+    setActionId(id);
     try {
       const res = await fetch(`http://localhost:8080/grievance/${id}/forward`, {
         method: "PUT",
@@ -89,12 +101,15 @@ const GrievanceList = () => {
             g._id === id ? { ...g, forwardedToWarden: true } : g
           )
         );
-        alert("➡️ Grievance forwarded to Warden.");
+        toast.info("➡️ Grievance forwarded to Warden.");
       } else {
-        alert("❌ Failed to forward grievance.");
+        toast.error("❌ Failed to forward grievance.");
       }
     } catch (err) {
       console.error("Error forwarding grievance:", err);
+      toast.error("❌ Error while forwarding grievance.");
+    } finally {
+      setActionId(null);
     }
   };
 
@@ -156,28 +171,34 @@ const GrievanceList = () => {
                         "No File"
                       )}
                     </td>
-                    <td className="d-flex gap-2 flex-wrap">
-                      <Button
-                        color="success"
-                        size="sm"
-                        onClick={() => handleSolved(g._id)}
-                      >
-                        ✅ Solved
-                      </Button>
-                      <Button
-                        color="danger"
-                        size="sm"
-                        onClick={() => handleReject(g._id)}
-                      >
-                        ❌ Reject
-                      </Button>
-                      <Button
-                        color="warning"
-                        size="sm"
-                        onClick={() => handleForward(g._id)}
-                      >
-                        ➡️ Forward
-                      </Button>
+                    <td className="d-flex gap-2 flex-wrap justify-content-center">
+                      {actionId === g._id ? (
+                        <div className="red-spinner"></div>
+                      ) : (
+                        <>
+                          <Button
+                            color="success"
+                            size="sm"
+                            onClick={() => handleSolved(g._id)}
+                          >
+                            ✅ Solved
+                          </Button>
+                          <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleReject(g._id)}
+                          >
+                            ❌ Reject
+                          </Button>
+                          <Button
+                            color="warning"
+                            size="sm"
+                            onClick={() => handleForward(g._id)}
+                          >
+                            ➡️ Forward
+                          </Button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -186,6 +207,27 @@ const GrievanceList = () => {
           )}
         </Col>
       </Row>
+
+      {/* Toast container */}
+      <ToastContainer position="top-right" theme="colored" />
+
+      {/* 🔴 Red loader style */}
+      <style>{`
+        .red-spinner {
+          width: 30px;
+          height: 30px;
+          border: 4px solid transparent;
+          border-top: 4px solid red;
+          border-right: 4px solid red;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          margin: auto;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </Container>
   );
 };

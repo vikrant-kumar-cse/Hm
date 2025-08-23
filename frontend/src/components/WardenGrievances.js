@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Container, Row, Col, Spinner } from "reactstrap";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const WardenGrievances = () => {
   const [grievances, setGrievances] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [actionId, setActionId] = useState(null); // track which grievance is in process
 
   // Fetch grievances
   const fetchData = async () => {
@@ -24,6 +27,7 @@ const WardenGrievances = () => {
 
   // Handle Solved
   const handleSolved = async (id) => {
+    setActionId(id);
     try {
       const res = await fetch(`http://localhost:8080/grievance/${id}/solve`, {
         method: "PUT",
@@ -31,14 +35,16 @@ const WardenGrievances = () => {
       });
 
       if (res.ok) {
-        // Remove solved grievance from the page
         setGrievances((prev) => prev.filter((g) => g._id !== id));
-        alert("✅ Grievance marked as solved.");
+        toast.success("✅ Grievance marked as solved.");
       } else {
-        alert("❌ Failed to update grievance.");
+        toast.error("❌ Failed to update grievance.");
       }
     } catch (err) {
       console.error("Error solving grievance:", err);
+      toast.error("❌ Error while solving grievance.");
+    } finally {
+      setActionId(null);
     }
   };
 
@@ -46,10 +52,11 @@ const WardenGrievances = () => {
   const handleReject = async (id) => {
     const reason = prompt("⚠️ Enter rejection reason:");
     if (!reason || reason.trim() === "") {
-      alert("Rejection cancelled. No reason provided.");
+      toast.warning("Rejection cancelled. No reason provided.");
       return;
     }
 
+    setActionId(id);
     try {
       const res = await fetch(`http://localhost:8080/grievance/${id}/reject`, {
         method: "PUT",
@@ -58,14 +65,16 @@ const WardenGrievances = () => {
       });
 
       if (res.ok) {
-        // Remove rejected grievance from the page
         setGrievances((prev) => prev.filter((g) => g._id !== id));
-        alert("❌ Grievance rejected.");
+        toast.error("❌ Grievance rejected.");
       } else {
-        alert("❌ Failed to reject grievance.");
+        toast.error("❌ Failed to reject grievance.");
       }
     } catch (err) {
       console.error("Error rejecting grievance:", err);
+      toast.error("❌ Error while rejecting grievance.");
+    } finally {
+      setActionId(null);
     }
   };
 
@@ -127,21 +136,27 @@ const WardenGrievances = () => {
                         "No File"
                       )}
                     </td>
-                    <td className="d-flex gap-2 flex-wrap">
-                      <Button
-                        color="success"
-                        size="sm"
-                        onClick={() => handleSolved(g._id)}
-                      >
-                        ✅ Solved
-                      </Button>
-                      <Button
-                        color="danger"
-                        size="sm"
-                        onClick={() => handleReject(g._id)}
-                      >
-                        ❌ Reject
-                      </Button>
+                    <td className="d-flex gap-2 flex-wrap justify-content-center">
+                      {actionId === g._id ? (
+                        <div className="red-spinner"></div>
+                      ) : (
+                        <>
+                          <Button
+                            color="success"
+                            size="sm"
+                            onClick={() => handleSolved(g._id)}
+                          >
+                            ✅ Solved
+                          </Button>
+                          <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleReject(g._id)}
+                          >
+                            ❌ Reject
+                          </Button>
+                        </>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -150,6 +165,27 @@ const WardenGrievances = () => {
           )}
         </Col>
       </Row>
+
+      {/* Toast container */}
+      <ToastContainer position="top-right" theme="colored" />
+
+      {/* 🔴 Red loader style */}
+      <style>{`
+        .red-spinner {
+          width: 30px;
+          height: 30px;
+          border: 4px solid transparent;
+          border-top: 4px solid red;
+          border-right: 4px solid red;
+          border-radius: 50%;
+          animation: spin 0.8s linear infinite;
+          margin: auto;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </Container>
   );
 };
